@@ -75,3 +75,12 @@ With an applicative oreder evaluation, the test function will not run properly b
 The new if does not work in the `sqrt-iter` function, it throws a _stack overflow_ type error.
 
 This is because the special form `if` runs in applicative order, thus evaluating the predicate and only running `then` or `else` when needed. In the case of `new-if`, because of the recursive call, it will be stuck evaluating that.
+
+== Exercise 1.7
+
+Trying out the newton method, on very low numbers ($0.0001$) returns not very accurate results, compared to an actual square root method, comparing it with the common lisp `sqrt`:
+
+- ```clj (sqrt 0.0001)``` $-> 0.01$
+- ```clj (newton-sqrt 0.0001)``` $-> 0.032308448$
+
+Now, with large numbers, what happens is that the number of operations exponentially increases and gets stuck evaluating. So, if we were to try and fix the first issue with smaller numbers, making our `good-enough?` function use a lower boundary, we would eventually reach the second problem, getting stuck in recursion.
