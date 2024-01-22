@@ -53,7 +53,7 @@
                   (+ (* y y) (* x x))
                   (+ (* y y) (* z z))))))
 ```
-
+#pagebreak()
 == Exercise 1.4
 
 The function `a-plus-abs-b` utilizes the if condition to change the operation to a sum if b is positive or a substraction otherwise, acting as $|b|$. 
@@ -68,7 +68,7 @@ $"a-plus-abs-b"(a, b) = cases(
 
 == Exercise 1.5
 
-With an applicative oreder evaluation, the test function will not run properly because `(p)` will loop on itself, continiously running `(test 0 (p))`. Using normal order evaluation, because $y$ is not utilized on the `test` function, the `if` clause will be executed and resolve to $0$.
+With an applicative order evaluation, the test function will not run properly because `(p)` will loop on itself, continiously running `(test 0 (p))`. Using normal order evaluation, because $y$ is not utilized on the `test` function, the `if` clause will be executed and resolve to $0$.
 
 == Exercise 1.6
 
@@ -84,3 +84,24 @@ Trying out the newton method, on very low numbers ($0.0001$) returns not very ac
 - ```clj (newton-sqrt 0.0001)``` $-> 0.032308448$
 
 Now, with large numbers, what happens is that the number of operations exponentially increases and gets stuck evaluating. So, if we were to try and fix the first issue with smaller numbers, making our `good-enough?` function use a lower boundary, we would eventually reach the second problem, getting stuck in recursion.
+
+Implementing the new `not-better?` function:
+
+```clj
+(defun not-better? (guess prev-guess) 
+  (< (abs (/ (- guess prev-guess) guess)) 0.0000000001))
+```
+
+And changing `sqrt-iter` accordingly:
+
+```clj
+(defun sqrt-iter (guess x)
+  (if (not-better? (improve guess x) guess) 
+      guess 
+      (sqrt-iter (improve guess x) 
+                 x)))
+```
+
+Our results err much less _relative_ to the values, thus fixing our problems with disproportionately large and small numbers
+
+== Exercise 1.8
