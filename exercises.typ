@@ -105,3 +105,77 @@ And changing `sqrt-iter` accordingly:
 Our results err much less _relative_ to the values, thus fixing our problems with disproportionately large and small numbers
 
 == Exercise 1.8
+
+To change this we reimplement the functions, which are very similar. The only notable change is the new improve function:
+
+```clj
+(defun improve-cube (guess x)
+  (/ (+ (/ x (square guess)) (* 2 guess)) 3))
+```
+
+The rest of the `cube-iter` function is identical to sqrt-iter. #link("./code/newton-sqrt.lisp", "See code").
+
+== Exercise 1.9
+The first implementation follows a recursive structure:
+
+```clj
+(+ 4 5)
+(inc (+ 3 5))
+(inc (inc (+ 2 5)))
+(inc (inc (inc (+ 1 5))))
+(inc (inc (inc (inc (+ 0 5)))))
+(inc (inc (inc (inc 5))))
+(inc (inc (inc 6)))
+(inc (inc 7))
+(inc 8)
+9
+```
+
+Second implementation is an iterative process:
+
+```clj
+(+ 4 5)
+(+ 3 6)
+(+ 2 7)
+(+ 1 8)
+(+ 0 9)
+9
+```
+
+== Exercise 1.10
+
+- ```clj (A 1 10)``` $-> 1024$
+- ```clj (A 2 4)``` $-> 65536$
+- ```clj (A 3 3)``` $-> 65536$
+
+$------------------$
+- ```clj (f n)``` $-> 2*n$
+- ```clj (g n)``` $-> 2^n$
+- ```clj (h n)``` $-> 2^(h(n-1))$
+
+== Exercise 1.11
+
+Recursive version:
+```clj
+(defun f-1.11-rec (n)
+  (if (< n 3)
+      n
+      (+ 
+       (f-1.11-rec (- n 1)) 
+       (* 2 (f-1.11-rec (- n 2))) 
+       (* 3 (f-1.11-rec (- n 3))))))
+```
+
+Iterative version:
+
+```clj
+(defun f-1.11 (n)
+  (f-1.11-iter 2 1 0 n))
+
+(defun f-1.11-iter (a b c count)
+  (if (= count 0)
+      c
+      (f-1.11-iter (+ a (* 2 b) (* 3 c)) a b (- count 1))))
+```
+
+== Exercise 1.12
