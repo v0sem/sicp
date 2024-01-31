@@ -18,3 +18,19 @@
   (if (= count 0)
       c
       (f-1.11-iter (+ a (* 2 b) (* 3 c)) a b (- count 1))))
+
+(defun pasc-num (row col)
+  (cond ((< row 1) 1)
+        ((or (<= col 1) (>= col row)) 1)
+        (T (+ (pasc-num (- row 1) (- col 1)) (pasc-num (- row 1) col)))))
+
+(defun pasc-row (row)
+  (loop for item from 1 to row do
+           (write (pasc-num row item))
+        (write-char #\Space))
+  (write-char #\Newline))
+
+(defun pasc (row)
+  (loop for i from 1 to row do
+        (pasc-row i)))
+
