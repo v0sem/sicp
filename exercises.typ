@@ -1,6 +1,14 @@
-= Chapter 1: Building Abstractions with Procedures
+#import "@local/cetz:0.2.0"
 
-== Exercise 1.1
+= SICP Exercises
+
+This is my solution to most of the exercises on the sicp book. The main difference with the book itself is that the book proposes using scheme and I solved them using common lisp, which has some different keywords and uses.
+
+I will try to keep the code closer to scheme, keeping with the spirit of the chapter or exercise.
+
+== Chapter 1: Building Abstractions with Procedures
+
+=== Exercise 1.1
 
 - `10`
 - `(+ 5 3 4)` $->$ `12`
@@ -29,7 +37,7 @@
       (+ a 1))```
   ~~~~~~~~~$arrow.r.curve$ `16`
 
-== Exercise 1.2
+=== Exercise 1.2
 
 ```clj
 (/ (+ 5 4 (- 2 
@@ -40,7 +48,8 @@
       (- 6 2)
       (- 2 7)))
 ```
-== Exercise 1.3
+#pagebreak()
+=== Exercise 1.3
 
 ```clj
 (define ex1.3 (x y z) 
@@ -53,8 +62,7 @@
                   (+ (* y y) (* x x))
                   (+ (* y y) (* z z))))))
 ```
-#pagebreak()
-== Exercise 1.4
+=== Exercise 1.4
 
 The function `a-plus-abs-b` utilizes the if condition to change the operation to a sum if b is positive or a substraction otherwise, acting as $|b|$. 
 
@@ -66,17 +74,17 @@ $"a-plus-abs-b"(a, b) = cases(
   a - b "if" b < 0,
 ) eq.triple a + |b|$
 
-== Exercise 1.5
+=== Exercise 1.5
 
 With an applicative order evaluation, the test function will not run properly because `(p)` will loop on itself, continiously running `(test 0 (p))`. Using normal order evaluation, because $y$ is not utilized on the `test` function, the `if` clause will be executed and resolve to $0$.
 
-== Exercise 1.6
+=== Exercise 1.6
 
 The new if does not work in the `sqrt-iter` function, it throws a _stack overflow_ type error.
 
 This is because the special form `if` runs in applicative order, thus evaluating the predicate and only running `then` or `else` when needed. In the case of `new-if`, because of the recursive call, it will be stuck evaluating that.
 
-== Exercise 1.7
+=== Exercise 1.7
 
 Trying out the newton method, on very low numbers ($0.0001$) returns not very accurate results, compared to an actual square root method, comparing it with the common lisp `sqrt`:
 
@@ -104,7 +112,7 @@ And changing `sqrt-iter` accordingly:
 
 Our results err much less _relative_ to the values, thus fixing our problems with disproportionately large and small numbers
 
-== Exercise 1.8
+=== Exercise 1.8
 
 To change this we reimplement the functions, which are very similar. The only notable change is the new improve function:
 
@@ -115,7 +123,7 @@ To change this we reimplement the functions, which are very similar. The only no
 
 The rest of the `cube-iter` function is identical to sqrt-iter. #link("./code/newton-sqrt.lisp", "See code").
 
-== Exercise 1.9
+=== Exercise 1.9
 The first implementation follows a recursive structure:
 
 ```clj
@@ -142,7 +150,7 @@ Second implementation is an iterative process:
 9
 ```
 
-== Exercise 1.10
+=== Exercise 1.10
 
 - ```clj (A 1 10)``` $-> 1024$
 - ```clj (A 2 4)``` $-> 65536$
@@ -153,7 +161,7 @@ $------------------$
 - ```clj (g n)``` $-> 2^n$
 - ```clj (h n)``` $-> 2^(h(n-1))$
 
-== Exercise 1.11
+=== Exercise 1.11
 
 Recursive version:
 ```clj
@@ -165,7 +173,7 @@ Recursive version:
        (* 2 (f-1.11-rec (- n 2))) 
        (* 3 (f-1.11-rec (- n 3))))))
 ```
-
+#pagebreak()
 Iterative version:
 
 ```clj
@@ -178,4 +186,65 @@ Iterative version:
       (f-1.11-iter (+ a (* 2 b) (* 3 c)) a b (- count 1))))
 ```
 
-== Exercise 1.12
+
+=== Exercise 1.12
+
+I separated the code into rows and number calculation but the execution is still recursive.
+
+```clj
+(defun pasc-num (row col)
+  (cond ((< row 1) 1)
+        ((or (<= col 1) (>= col row)) 1)
+        (T (+ (pasc-num (- row 1) (- col 1)) (pasc-num (- row 1) col)))))
+
+(defun pasc-row (row)
+  (loop for item from 1 to row do
+           (write (pasc-num row item))
+        (write-char #\Space))
+  (write-char #\Newline))
+
+(defun pasc (row)
+  (loop for i from 1 to row do
+        (pasc-row i)))
+```
+
+=== Exercise 1.14
+#let data = ([11 - 50], ([11 - 25], ([11 - 10], ([11 - 5], ([11 - 1], ([11 - 0], [0]), ([10 - 1], ([...], [1]))), ([6 - 5], ([6 - 1], ([6 - 0], [0]),  ([1 - 5], ([1 - 1], ([1 - 0], [0]), ([0 - 1], [1])), ([-4 -5], [0]))), ([1 - 5], ([1 - 1], ([1 - 0], [0]), ([0 - 1], [1])), ([-4 -5], [0])))), ([1 - 10], ([1 - 5], ([1 - 1], ([1 - 0], [0]), ([0 - 1], [1])), ([-4 - 5], [0])), ([-9 - 10], [0]))), ([-14 - 25], [0])), ([-39 - 50], [0]))
+#cetz.canvas(length: .4cm, {
+  import cetz.draw: *
+
+  cetz.draw.set-style(content: (padding: .2),
+    fill: gray.lighten(70%),
+    stroke: gray)
+
+  cetz.tree.tree(data, spread: 2, grow: 3, draw-node: (node, ..) => {
+    circle((), radius: 1, stroke: none)
+    content((), node.content)
+  }, draw-edge: (from, to, ..) => {
+    line((a: from, number: .6, b: to), (a: to,  number: .6, b: from), mark: (end: ">"))
+  }, name: "tree") 
+})
+
+=== Exercise 1.15
+
+#set enum(numbering: "a.")
++ How many times is p applied when calling ```clj (sine 12.15)```
+
+  Appling trace to p, we can see:
+```clj
+|CL-USER> (trace p)
+│(P)
+│CL-USER> (sine 12.15)
+│  0: (P 0.049999997)
+│  0: P returned 0.1495
+│  0: (P 0.1495)
+│  0: P returned 0.43513453
+│  0: (P 0.43513453)
+│  0: P returned 0.9758465
+│  0: (P 0.9758465)
+│  0: P returned -0.7895632
+│  0: (P -0.7895632)
+```
+  A total of 5 times (once per execution of `sine`)
+
++ Order of growth?
