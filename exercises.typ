@@ -209,7 +209,7 @@ I separated the code into rows and number calculation but the execution is still
 ```
 
 === Exercise 1.14
-#let data = ([11 - 50], ([11 - 25], ([11 - 10], ([11 - 5], ([11 - 1], ([11 - 0], [0]), ([10 - 1], ([...], [1]))), ([6 - 5], ([6 - 1], ([6 - 0], [0]),  ([1 - 5], ([1 - 1], ([1 - 0], [0]), ([0 - 1], [1])), ([-4 -5], [0]))), ([1 - 5], ([1 - 1], ([1 - 0], [0]), ([0 - 1], [1])), ([-4 -5], [0])))), ([1 - 10], ([1 - 5], ([1 - 1], ([1 - 0], [0]), ([0 - 1], [1])), ([-4 - 5], [0])), ([-9 - 10], [0]))), ([-14 - 25], [0])), ([-39 - 50], [0]))
+#let data = ([11 - 50], ([11 - 25], ([11 - 10], ([11 - 5], ([11 - 1], ([11 - 0], [0]), ([10 - 1], ([...], [1]))), ([6 - 5], ([6 - 1], ([6 - 0], [0]),  ([5 - 1], ([...], [1]), ([-4 -5], [0]))), ([1 - 5], ([1 - 1], ([1 - 0], [0]), ([0 - 1], [1])), ([-4 -5], [0])))), ([1 - 10], ([1 - 5], ([1 - 1], ([1 - 0], [0]), ([0 - 1], [1])), ([-4 - 5], [0])), ([-9 - 10], [0]))), ([-14 - 25], [0])), ([-39 - 50], [0]))
 #cetz.canvas(length: .4cm, {
   import cetz.draw: *
 
@@ -225,26 +225,52 @@ I separated the code into rows and number calculation but the execution is still
   }, name: "tree") 
 })
 
+The amount of operations grows by one and then doubles every time a threshold is hit for every threshold.
+
+Simplifying in big O notation, we can evaluate per number of types of coins.
+
+For one type of coin we can see that it gets one deeper for every extra one value in the amount, for example $5 - 1$ takes $5$ steps to evaluate. In big O notation:
+
+$Theta \(n\)$
+
+For two types of coins, we add more depth every time we hit the threshold.
+
+$n/5 + 1 + limits(sum)^(n/5)_(i=0) T (n-5i, 1)$
+
+Which means the second tree gets a depth of $n/5$ and another smaller tree per time it has hit the $5$ coin threshold. For example in the 11 coins, you would get your normal depth _n_ tree for the 11 one cent coins, a tree for two 5 cent coins and one 1 cent coin, and another for one 5 cent and six 1 cent.
+
+Simplified and reduced for big O notation:
+
+$Theta (n^2)$
+
+We could keep proving this upwards but with 5 types of coins we end up with:
+
+$Theta (n^5)$
+
+Which grows very big when _n_ is bigger.
+
 === Exercise 1.15
 
 #set enum(numbering: "a.")
 + How many times is p applied when calling ```clj (sine 12.15)```
 
   Appling trace to p, we can see:
-```clj
-|CL-USER> (trace p)
-│(P)
-│CL-USER> (sine 12.15)
-│  0: (P 0.049999997)
-│  0: P returned 0.1495
-│  0: (P 0.1495)
-│  0: P returned 0.43513453
-│  0: (P 0.43513453)
-│  0: P returned 0.9758465
-│  0: (P 0.9758465)
-│  0: P returned -0.7895632
-│  0: (P -0.7895632)
-```
+  ```clj
+  |CL-USER> (trace p)
+  │(P)
+  │CL-USER> (sine 12.15)
+  │  0: (P 0.049999997)
+  │  0: P returned 0.1495
+  │  0: (P 0.1495)
+  │  0: P returned 0.43513453
+  │  0: (P 0.43513453)
+  │  0: P returned 0.9758465
+  │  0: (P 0.9758465)
+  │  0: P returned -0.7895632
+  │  0: (P -0.7895632)
+  ```
   A total of 5 times (once per execution of `sine`)
 
-+ Order of growth?
++ The function grows in $O(log(x))$
+
+=== Exercise 1.16
